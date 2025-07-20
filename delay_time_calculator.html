@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delay Time Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      background: #f4f4f4;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    label, input, select {
+      font-size: 1.1em;
+    }
+    table {
+      margin-top: 2em;
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      padding: 0.5em;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    .section-header {
+      background-color: #ddd;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Delay Time Calculator</h1>
+
+  <label for="bpm">Select BPM:</label>
+  <input type="number" id="bpm" value="120" min="20" max="300" step="1">
+  <button onclick="calculateDelays()">Calculate</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Note Division</th>
+        <th>Milliseconds</th>
+      </tr>
+    </thead>
+    <tbody id="results">
+    </tbody>
+  </table>
+
+  <script>
+    function calculateDelays() {
+      const bpm = parseFloat(document.getElementById('bpm').value);
+      const results = document.getElementById('results');
+
+      const noteGroups = [
+        {
+          header: 'Standard Grid',
+          divisions: [
+            { label: '1/32 Triplet', factor: 1/12 },
+            { label: '1/32 Note', factor: 0.125 },
+            { label: '1/32 Dotted', factor: 0.1875 },
+            { label: '1/16 Triplet', factor: 1/6 },
+            { label: '1/16 Note', factor: 0.25 },
+            { label: '1/16 Dotted', factor: 0.375 },
+            { label: '1/8 Triplet', factor: 1/3 },
+            { label: '1/8 Note', factor: 0.5 },
+            { label: '1/8 Dotted', factor: 0.75 },
+            { label: '1/4 Triplet', factor: 2/3 },
+            { label: '1/4 Note', factor: 1 },
+            { label: '1/4 Dotted', factor: 1.5 }
+          ]
+        },
+        {
+          header: 'Longer Delays',
+          divisions: [
+            { label: '1/2 Note', factor: 2 },
+            { label: 'Whole Note', factor: 4 },
+            { label: '2 Bars (4/4)', factor: 8 }
+          ]
+        }
+      ];
+
+      results.innerHTML = '';
+
+      noteGroups.forEach(group => {
+        const sectionRow = `<tr class="section-header"><td colspan="2">${group.header}</td></tr>`;
+        results.innerHTML += sectionRow;
+
+        group.divisions.forEach(nd => {
+          const ms = Math.round((60000 / bpm) * nd.factor);
+          const row = `<tr><td>${nd.label}</td><td>${ms} ms</td></tr>`;
+          results.innerHTML += row;
+        });
+      });
+    }
+
+    // Initial render
+    calculateDelays();
+  </script>
+</body>
+</html>
